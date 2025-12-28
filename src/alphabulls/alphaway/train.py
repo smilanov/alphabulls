@@ -8,8 +8,8 @@ import random
 import numpy as np
 from tqdm import tqdm
 
-from alphabulls.neural_net import AlphaBullsNet
-from alphabulls.self_play import play_game
+from alphabulls.alphaway.self_play import play_game
+from alphabulls.alphaway.neural_net import AlphaBullsNet
 from alphabulls.utils import DEVICE
 
 # --- Hyperparameters ---
