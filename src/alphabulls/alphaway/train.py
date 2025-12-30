@@ -8,7 +8,8 @@ import random
 import numpy as np
 from tqdm import tqdm
 
-from alphabulls.alphaway.self_play import play_game
+# from alphabulls.alphaway.self_play import play_game
+from alphabulls.alphaway.self_play_Dirichlet_noise import play_game
 from alphabulls.alphaway.neural_net import AlphaBullsNet
 from alphabulls.utils import DEVICE
 
@@ -82,7 +83,7 @@ def main():
         print(f"Epoch finished. Final Loss: {total_loss.item():.4f}")
 
         # Save model checkpoint
-        torch.save(model.state_dict(), f"alphabulls_model_epoch_{epoch + 1}.pth")
+        torch.save(model.state_dict(), f"../../../models_saved/alphabulls_model_epoch_{epoch + 1}.pth")
 
 
 if __name__ == "__main__":
