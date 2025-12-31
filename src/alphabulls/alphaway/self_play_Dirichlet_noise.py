@@ -35,7 +35,12 @@ def play_game(model):
         policy_probs = (1 - EXPLORATION_FRACTION) * policy_probs + EXPLORATION_FRACTION * noise
         # ------------------------------------------------------------------------------------
 
-        # 2. Choose an action
+        # ------------------- THE FIX: RE-NORMALIZE THE PROBABILITIES -------------------
+        # This corrects for tiny floating-point errors that can make the sum not exactly 1.
+        policy_probs /= np.sum(policy_probs)
+        # -----------------------------------------------------------------------------
+
+        # 2. Choose an action based on the noisy policy
         action_idx = np.random.choice(len(policy_probs), p=policy_probs)
         guess = INDEX_TO_CODE[action_idx]
 
