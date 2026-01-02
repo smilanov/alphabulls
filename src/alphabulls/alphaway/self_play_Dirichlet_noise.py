@@ -60,7 +60,10 @@ def play_game(model):
         # 3. Make the move in the environment
         _, is_won = game.make_guess(guess)
 
-        if is_won or game.guess_count >= 15:  # End game if won or too long
+        if is_won:
+            # print(f"Solved the game in {game.guess_count} guesses! The code was {game.secret_code_str}. The game_history is {game.history}")
+            break
+        elif game.guess_count >= 15:  # End game if won or too long
             break
 
     # 4. Process game results to create training data
@@ -68,6 +71,8 @@ def play_game(model):
     num_guesses = game.guess_count
 
     for i, (state, action_idx) in enumerate(game_history):
+        # if num_guesses == 15:
+        #     continue  # Skip training data if the game was not solved
         target_value = float(num_guesses - i)
 
         target_policy = np.zeros(len(policy_probs), dtype=np.float32)
