@@ -10,14 +10,14 @@ from tqdm import tqdm
 
 # from alphabulls.alphaway.self_play import play_game
 from alphabulls.alphaway.self_play_Dirichlet_noise import play_game
-from alphabulls.alphaway.neural_net import AlphaBullsNet
+from alphabulls.alphaway.LSTM_net import AlphaBullsNet
 from alphabulls.utils import DEVICE
 
 # --- Hyperparameters ---
 NUM_EPOCHS = 50
-GAMES_PER_EPOCH = 100
+GAMES_PER_EPOCH = 300
 BATCH_SIZE = 64
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.0001
 REPLAY_BUFFER_SIZE = 50000
 
 
@@ -83,7 +83,7 @@ def main():
         print(f"Epoch finished. Final Loss: {total_loss.item():.4f}")
 
         # Save model checkpoint
-        torch.save(model.state_dict(), f"../../../models_saved/alphabulls_model_epoch_{epoch + 1}.pth")
+        # torch.save(model.state_dict(), f"../../../models_saved/alphabulls_model_epoch_{epoch + 1}.pth")
 
 
 if __name__ == "__main__":
