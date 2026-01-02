@@ -6,7 +6,8 @@ import torch
 
 # --- Game Constants ---
 NUM_DIGITS = 4
-MAX_GUESSES = 10  # Max history length for the neural network state
+MAX_HISTORY = 10  # Max history length for the neural network state
+MAX_GUESSES = 15  # Max history length for the neural network state
 
 # --- Action Space ---
 # Generate all possible 4-digit codes with unique digits
@@ -23,7 +24,7 @@ INDEX_TO_CODE = {i: code for i, code in enumerate(ALL_POSSIBLE_CODES)}
 # For each guess: 4 digits + 1 for bulls + 1 for cows = 6 features
 STATE_FEATURE_SIZE = NUM_DIGITS + 2
 # NOTE: STATE_SIZE constant is no longer needed by the network but doesn't hurt to keep
-STATE_SIZE = STATE_FEATURE_SIZE * MAX_GUESSES
+STATE_SIZE = STATE_FEATURE_SIZE * MAX_HISTORY
 
 # --- Training Constants ---
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -40,10 +41,10 @@ def state_to_tensor(history):
     Output shape: (MAX_GUESSES, STATE_FEATURE_SIZE) -> (10, 6)
     """
     # Create a matrix of zeros. Shape will be (10, 6)
-    state_matrix = np.zeros((MAX_GUESSES, STATE_FEATURE_SIZE))
+    state_matrix = np.zeros((MAX_HISTORY, STATE_FEATURE_SIZE))
 
     if history:
-        for i, (guess, feedback) in enumerate(history[-MAX_GUESSES:]):
+        for i, (guess, feedback) in enumerate(history[-MAX_HISTORY:]):
             # Each row is one guess: [d1, d2, d3, d4, bulls, cows]
             row = np.array(code_to_tensor(guess) + [feedback[0], feedback[1]])
             state_matrix[i] = row

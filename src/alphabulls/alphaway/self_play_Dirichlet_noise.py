@@ -4,7 +4,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 from alphabulls.game_env import BullsAndCowsGame
-from alphabulls.utils import state_to_tensor, INDEX_TO_CODE, CODE_TO_INDEX
+from alphabulls.utils import state_to_tensor, INDEX_TO_CODE, CODE_TO_INDEX, MAX_GUESSES
 
 # --- NEW: Add exploration parameters ---
 DIRICHLET_ALPHA = 0.3
@@ -63,7 +63,7 @@ def play_game(model):
         if is_won:
             # print(f"Solved the game in {game.guess_count} guesses! The code was {game.secret_code_str}. The game_history is {game.history}")
             break
-        elif game.guess_count >= 15:  # End game if won or too long
+        elif game.guess_count >= MAX_GUESSES:  # End game if won or too long
             break
 
     # 4. Process game results to create training data
@@ -71,7 +71,7 @@ def play_game(model):
     num_guesses = game.guess_count
 
     for i, (state, action_idx) in enumerate(game_history):
-        # if num_guesses == 15:
+        # if num_guesses == MAX_GUESSES:
         #     continue  # Skip training data if the game was not solved
         target_value = float(num_guesses - i)
 
