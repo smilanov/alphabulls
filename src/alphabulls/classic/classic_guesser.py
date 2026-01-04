@@ -1,6 +1,6 @@
 # alphabulls/classic_solver.py
 
-from alphabulls.utils import ALL_POSSIBLE_CODES, code_to_tensor, CODE_TO_INDEX, INDEX_TO_CODE
+from alphabulls.utils import ALL_POSSIBLE_CODES, code_to_tensor, CODE_TO_INDEX, INDEX_TO_CODE, NUM_DIGITS
 from collections import defaultdict
 import time
 import re  # Import regular expressions for parsing user input
@@ -38,8 +38,8 @@ class KnuthSolver:
         game = BullsAndCowsGame()
         print(f"Classic Solver starting. Secret code is {game.secret_code_str}")
 
-        # First guess is always a good starting point like "0123"
-        guess = "0123"
+        # First guess is always a good starting point like "0123" (if NUM_DIGITS=4), "01" (if NUM_DIGITS=2), etc.
+        guess = ''.join(str(i) for i in range(NUM_DIGITS))
 
         for i in range(1, 11):
             feedback, is_won = game.make_guess(guess)
