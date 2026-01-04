@@ -11,7 +11,7 @@ from tqdm import tqdm
 # from alphabulls.alphaway.self_play import play_game
 from alphabulls.alphaway.self_play_Dirichlet_noise import play_game
 from alphabulls.alphaway.LSTM_net import AlphaBullsNet
-from alphabulls.utils import DEVICE
+from alphabulls.utils import DEVICE, MAX_GUESSES
 
 # --- Hyperparameters ---
 NUM_EPOCHS = 50
@@ -39,12 +39,28 @@ def main():
 
         # --- Self-Play Phase ---
         model.eval()
-        total_guesses = []
         print("Generating game data through self-play...")
+
+        new_game_experiences = []
+        successful_games = 0
+        failed_games = 0
+        total_guesses = []
         for _ in tqdm(range(GAMES_PER_EPOCH)):
             game_data, num_guesses = play_game(model)
-            replay_buffer.extend(game_data)
-            total_guesses.append(num_guesses)
+            # --- THE FILTERING LOGIC ---
+            if num_guesses < MAX_GUESSES:  # This was a successful game
+                new_game_experiences.extend(game_data)
+                successful_games += 1
+                total_guesses.append(num_guesses)
+            else:  # This was a failed game
+                # Only add failed games with a small probability, e.g., 10%
+                if random.random() < 0.8: # add almost all failed games; 90%
+                    new_game_experiences.extend(game_data)
+                    total_guesses.append(num_guesses)
+                    failed_games += 1
+
+        replay_buffer.extend(new_game_experiences)
+        print(f"Added experiences from {successful_games} successful games and a {failed_games} failed games.")
 
         avg_guesses = np.mean(total_guesses)
         print(f"Average guesses per game: {avg_guesses:.2f}")
