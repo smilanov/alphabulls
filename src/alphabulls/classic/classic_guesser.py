@@ -90,8 +90,8 @@ class KnuthSolver:
         print("For example, enter '2B 1C' for 2 bulls and 1 cow.")
         print("--------------------------------------------------")
 
-        # Start with a strong initial guess
-        guess = "1234"
+        # First guess is always a good starting point like "0123" (if NUM_DIGITS=4), "01" (if NUM_DIGITS=2), etc.
+        guess = ''.join(str(i) for i in range(NUM_DIGITS))
 
         for i in range(1, 11):
             if not guess:
@@ -114,7 +114,7 @@ class KnuthSolver:
                     bulls = int(parts[0])
                     cows = int(parts[1])
 
-                    if not (0 <= bulls <= 4 and 0 <= cows <= 4 and bulls + cows <= 4):
+                    if not (0 <= bulls <= NUM_DIGITS and 0 <= cows <= NUM_DIGITS and bulls + cows <= NUM_DIGITS):
                         raise ValueError("Invalid feedback. Bulls and Cows must be between 0-4 and their sum cannot exceed 4.")
 
                     feedback = (bulls, cows)
