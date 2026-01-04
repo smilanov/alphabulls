@@ -60,24 +60,27 @@ def play_game(model):
         # 3. Make the move in the environment
         _, is_won = game.make_guess(guess)
 
+        # End game if won or too long
         if is_won:
             # print(f"Solved the game in {game.guess_count} guesses! The code was {game.secret_code_str}. The game_history is {game.history}")
+            final_outcome_guesses = game.guess_count
             break
-        elif game.guess_count >= MAX_GUESSES:  # End game if won or too long
+        elif game.guess_count >= MAX_GUESSES:
+            # --- THE PENALTY LOGIC --- Penalize failure by making the outcome seem much worse
+            final_outcome_guesses = MAX_GUESSES + 10
             break
 
     # 4. Process game results to create training data
     training_data = []
-    num_guesses = game.guess_count
 
     for i, (state, action_idx) in enumerate(game_history):
         # if num_guesses == MAX_GUESSES:
         #     continue  # Skip training data if the game was not solved
-        target_value = float(num_guesses - i)
+        target_value = float(final_outcome_guesses - i)
 
         target_policy = np.zeros(len(policy_probs), dtype=np.float32)
         target_policy[action_idx] = 1.0
 
         training_data.append((state, target_policy, target_value))
 
-    return training_data, num_guesses
+    return training_data, final_outcome_guesses
